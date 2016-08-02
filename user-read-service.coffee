@@ -1,15 +1,13 @@
 {readService} = require './read-service'
 UserModel = require './models/user-model'
 
-userReadServiceFactory = (_readService = readService) ->
+userReadService = () ->
     service = {}
 
     service.getUser = (id) ->
-        doc = _readService.getDocument id
+        doc = readService.getDocument id
         return new UserModel doc
 
     return service
 
-module.exports =
-    userReadService: userReadServiceFactory()
-    userReadServiceFactory: userReadServiceFactory
+module.exports = userReadService()

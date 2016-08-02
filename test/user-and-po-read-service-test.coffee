@@ -1,5 +1,6 @@
 InMemBucket = require '../db/in-mem-bucket'
 {expect} = require 'chai'
+rewire = require("rewire");
 
 describe 'userAndPoReadService', ->
     userAndPoReadService = null
@@ -8,15 +9,16 @@ describe 'userAndPoReadService', ->
     beforeEach ->
         bucket = new InMemBucket()
 
-        {readServiceFactory} = require '../read-service'
-        {poReadServiceFactory} = require '../po-read-service'
-        {userReadServiceFactory} = require '../user-read-service'
-        {userAndPoReadServiceFactory} = require '../user-and-po-read-service'
+        readService = rewire '../read-service'
+        poReadService = rewire '../po-read-service'
+        userReadService = rewire '../user-read-service'
+        userAndPoReadService = rewire '../user-and-po-read-service'
 
-        readService = readServiceFactory bucket
-        poReadService = poReadServiceFactory readService
-        userReadService = userReadServiceFactory readService
-        userAndPoReadService = userAndPoReadServiceFactory userReadService, poReadService
+        readService.__set__ 'bucket', bucket
+        poReadService.__set__ 'readService', readService
+        userReadService.__set__ 'readService', readService
+        userAndPoReadService.__set__ 'userReadService', userReadService
+        userAndPoReadService.__set__ 'poReadService', poReadService
 
     it 'should return user and po', ->
         bucket.set 'userid', {name: 'foo', type: 'user'}

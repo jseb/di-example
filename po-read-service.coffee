@@ -1,15 +1,13 @@
 {readService} = require './read-service'
 PoModel = require './models/po-model'
 
-poReadServiceFactory = (_readService = readService) ->
+poReadService = () ->
     service = {}
 
     service.getPo = (id) ->
-        doc = _readService.getDocument id
+        doc = readService.getDocument id
         return new PoModel doc
 
     return service
 
-module.exports =
-    poReadService: poReadServiceFactory()
-    poReadServiceFactory: poReadServiceFactory
+module.exports = poReadService()
